@@ -7,33 +7,21 @@
 //============================================================================
 
 #include <iostream>
+#include <cstdlib>
 using namespace std;
 
-double **a,**b,**c;
+double **a, **b, **c;
 void initArrays(int n);
 void cleanUp(int n);
 void multiplyMatrix(int n);
+void populateArrays(int n);
+double fRand(double fMin, double fMax);
 int main() {
-	int n,i,j;
+	int n, i, j;
 	cout << "\nEnter the size of rows and columns for Matrix A & B:::\n\n";
 	cin >> n;
 	initArrays(n);
-	cout << "\n\nEnter elements for Matrix A :::\n\n";
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			cin >> a[i][j];
-		}
-		cout << "\n";
-	}
-	cout << "\n-----------------------------------------------------------\n";
-
-	cout << "\n\nEnter elements for Matrix B :::\n\n";
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			cin >> b[i][j];
-		}
-		cout << "\n";
-	}
+	populateArrays(n);
 	cout << "\n\nMatrix A :\n\n";
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
@@ -49,7 +37,6 @@ int main() {
 		}
 		cout << "\n\n";
 	}
-
 
 	cout << "\n-----------------------------------------------------------\n";
 
@@ -75,28 +62,41 @@ void initArrays(int n) {
 	for (int i = 0; i < n; i++)
 		c[i] = new double[n];
 }
-void cleanUp(int n){
+void populateArrays(int n) {
+	int i, j;
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			a[i][j] = fRand(0.0,10.0);
+			b[i][j] = fRand(0.0,10.0);
+		}
+	}
+}
+void cleanUp(int n) {
 	for (int i = 0; i < n; ++i) {
-			delete[] a[n];
-		}
-		delete[] a;
-		for (int i = 0; i < n; ++i) {
-			delete[] b[n];
-		}
-		delete[] b;
-		for (int i = 0; i < n; ++i) {
-			delete[] c[n];
-		}
-		delete[] c;
+		delete[] a[n];
+	}
+	delete[] a;
+	for (int i = 0; i < n; ++i) {
+		delete[] b[n];
+	}
+	delete[] b;
+	for (int i = 0; i < n; ++i) {
+		delete[] c[n];
+	}
+	delete[] c;
 }
 void multiplyMatrix(int n) {
-	int i,j;
+	int i, j;
 	for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++) {
-				c[i][j] = 0;
-				for (int k = 0; k < n; k++) {
-					c[i][j] = c[i][j] + a[i][k] * b[k][j];
-				}
+		for (j = 0; j < n; j++) {
+			c[i][j] = 0;
+			for (int k = 0; k < n; k++) {
+				c[i][j] = c[i][j] + a[i][k] * b[k][j];
 			}
 		}
+	}
+}
+double fRand(double fMin, double fMax) {
+	double f = (double) rand() / RAND_MAX;
+	return fMin + f * (fMax - fMin);
 }
