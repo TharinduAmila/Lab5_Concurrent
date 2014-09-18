@@ -8,95 +8,75 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <vector>
 using namespace std;
 
-double **a, **b, **c;
-void initArrays(int n);
-void cleanUp(int n);
-void multiplyMatrix(int n);
-void populateArrays(int n);
-double fRand(double fMin, double fMax);
+void initArrays(double n,vector<vector<double> > &a,vector<vector<double> > &b,vector<vector<double> > &c);
+void multiplyMatrix(double n,vector<vector<double> > a,vector<vector<double> > b,vector<vector<double> > &c);
+double fRand();
+void sequentialRun(double n);
 int main() {
-	int n, i, j;
-	cout << "\nEnter the size of rows and columns for Matrix A & B:::\n\n";
-	cin >> n;
-	initArrays(n);
-	populateArrays(n);
-	cout << "\n\nMatrix A :\n\n";
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			cout << "\t" << a[i][j];
-		}
-		cout << "\n\n";
-	}
-
-	cout << "\n\nMatrix B :\n\n";
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			cout << "\t" << b[i][j];
-		}
-		cout << "\n\n";
-	}
-
-	cout << "\n-----------------------------------------------------------\n";
-
-	cout << "\n\nMultiplication of Matrix A and Matrix B :\n\n";
-	multiplyMatrix(n);
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			cout << "\t" << c[i][j];
-		}
-		cout << "\n\n";
-	}
-	cleanUp(n);
+	sequentialRun(2);
 	return 0;
 }
-void initArrays(int n) {
-	a = new double*[n];
-	for (int i = 0; i < n; i++)
-		a[i] = new double[n];
-	b = new double*[n];
-	for (int i = 0; i < n; i++)
-		b[i] = new double[n];
-	c = new double*[n];
-	for (int i = 0; i < n; i++)
-		c[i] = new double[n];
-}
-void populateArrays(int n) {
-	int i, j;
-	for (i = 0; i < n; i++) {
-		for (j = 0; j < n; j++) {
-			a[i][j] = fRand(0.0,10.0);
-			b[i][j] = fRand(0.0,10.0);
+void sequentialRun(double n){
+	srand(time(NULL));
+	double i, j;
+	vector<vector<double> > a,b,c;
+    initArrays(n,a,b,c);
+		cout << "\n\nMatrix A :\n\n";
+		for (i = 0; i < n; i++) {
+			for (j = 0; j < n; j++) {
+				cout << "\t" << a[i][j];
+			}
+			cout << "\n\n";
 		}
-	}
+
+		cout << "\n\nMatrix B :\n\n";
+		for (i = 0; i < n; i++) {
+			for (j = 0; j < n; j++) {
+				cout << "\t" << b[i][j];
+			}
+			cout << "\n\n";
+		}
+		multiplyMatrix(n,a,b,c);
+		cout << "\n-----------------------------------------------------------\n";
+
+		cout << "\n\nMultiplication of Matrix A and Matrix B :\n\n";
+		for (i = 0; i < n; i++) {
+			for (j = 0; j < n; j++) {
+				cout << "\t" << c[i][j];
+			}
+			cout << "\n\n";
+		}
 }
-void cleanUp(int n) {
-	for (int i = 0; i < n; ++i) {
-		delete[] a[n];
-	}
-	delete[] a;
-	for (int i = 0; i < n; ++i) {
-		delete[] b[n];
-	}
-	delete[] b;
-	for (int i = 0; i < n; ++i) {
-		delete[] c[n];
-	}
-	delete[] c;
+void initArrays(double n,vector<vector<double> > &a,vector<vector<double> > &b,vector<vector<double> > &c) {
+	cout << "Init Called" << endl;
+	int i,j;
+	for (i = 0; i < n; i++) {
+		vector<double> temp,temp1,temp2;
+			for (j = 0; j < n; j++) {
+				temp.push_back(fRand());
+				temp1.push_back(fRand());
+				temp2.push_back(0.0);
+			}
+			a.push_back(temp);
+			b.push_back(temp1);
+			c.push_back(temp2);
+		}
 }
-void multiplyMatrix(int n) {
+
+void multiplyMatrix(double n,vector<vector<double> > a,vector<vector<double> > b,vector<vector<double> > &c) {
 	int i, j;
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
-			c[i][j] = 0;
 			for (int k = 0; k < n; k++) {
 				c[i][j] = c[i][j] + a[i][k] * b[k][j];
 			}
 		}
 	}
 }
-double fRand(double fMin, double fMax) {
+double fRand() {
 	double f = (double) random() / RAND_MAX;
-	return fMin + f*(fMax - fMin);
+	return f*11.0;
 }
