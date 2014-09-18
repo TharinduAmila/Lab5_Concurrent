@@ -98,5 +98,5 @@ void multiplyMatrix(int n) {
 }
 double fRand(double fMin, double fMax) {
 	double f = (double) random() / RAND_MAX;
-	return fMin + f * (fMax - fMin);
+	return fMin + f*(fMax - fMin);
 }
