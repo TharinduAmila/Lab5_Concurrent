@@ -1,7 +1,8 @@
 time=0 
 average=0
 sample_size=0
-sample_size=$1  #first parameter
+sample_size=$2
+parallel_true=$1
 avg[0]=0
 filename="./Lab5_concurrent.cpp"
 g++ -fopenmp $filename
@@ -20,9 +21,10 @@ for i in {100..1000..100};
 do
 	temp=$i
 	let index=$i/100-1
-        time=$(./a.out $temp)
+        time=$(./a.out $parallel_true $temp)
         echo -e "$i\t:  $time" 
         avg[$index]=$(echo "${avg[$index]} + $time" | bc)
+	sleep 2
 done
 done
 
