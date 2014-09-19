@@ -1,4 +1,4 @@
-time=0
+time=0 
 average=0
 sample_size=0
 sample_size=$1  #first parameter
