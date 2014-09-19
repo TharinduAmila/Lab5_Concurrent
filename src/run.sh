@@ -5,7 +5,9 @@ sample_size=$2
 parallel_true=$1
 avg[0]=0
 filename="./Lab5_concurrent.cpp"
-g++ -fopenmp $filename
+g++ -O3 -Wall -c -fmessage-length=0 -fopenmp -MMD -MP -MF"./Lab5_concurrent.d" -MT"./Lab5_concurrent.d" -o "./Lab5_concurrent.o" $filename
+g++ -fopenmp -o "Lab5_concurrent"  ./Lab5_concurrent.o 
+#g++ -fopenmp $filename
 
 echo "Bash version ${BASH_VERSION}..."
 
@@ -21,7 +23,7 @@ for i in {100..1000..100};
 do
 	temp=$i
 	let index=$i/100-1
-        time=$(./a.out $parallel_true $temp)
+        time=$(./Lab5_concurrent $parallel_true $temp)
         echo -e "$i\t:  $time" 
         avg[$index]=$(echo "${avg[$index]} + $time" | bc)
 	sleep 2
