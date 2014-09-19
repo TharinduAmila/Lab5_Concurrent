@@ -9,74 +9,61 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <omp.h>
 using namespace std;
 
-void initArrays(double n,vector<vector<double> > &a,vector<vector<double> > &b,vector<vector<double> > &c);
-void multiplyMatrix(double n,vector<vector<double> > a,vector<vector<double> > b,vector<vector<double> > &c);
+void initArrays(int n, double*& a, double*& b, double*& c);
+double multiplyMatrix(int n, double*& a, double*& b, double*& c);
+void cleanUp(double*& a, double*& b, double*& c);
 double fRand();
-void sequentialRun(double n);
-int main() {
-	sequentialRun(2);
+double sequentialRun(int n);
+int main(int args, char* arg[]) {
+	int n = atoi(arg[1]);
+	double t = sequentialRun(n);
+	cout << t << endl;
 	return 0;
 }
-void sequentialRun(double n){
+double sequentialRun(int n) {
 	srand(time(NULL));
-	double i, j;
-	vector<vector<double> > a,b,c;
-    initArrays(n,a,b,c);
-		cout << "\n\nMatrix A :\n\n";
-		for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++) {
-				cout << "\t" << a[i][j];
-			}
-			cout << "\n\n";
-		}
-
-		cout << "\n\nMatrix B :\n\n";
-		for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++) {
-				cout << "\t" << b[i][j];
-			}
-			cout << "\n\n";
-		}
-		multiplyMatrix(n,a,b,c);
-		cout << "\n-----------------------------------------------------------\n";
-
-		cout << "\n\nMultiplication of Matrix A and Matrix B :\n\n";
-		for (i = 0; i < n; i++) {
-			for (j = 0; j < n; j++) {
-				cout << "\t" << c[i][j];
-			}
-			cout << "\n\n";
-		}
+	double* a, *b, *c;
+	initArrays(n, a, b, c);
+	double temp = multiplyMatrix(n, a, b, c);
+	return temp;
 }
-void initArrays(double n,vector<vector<double> > &a,vector<vector<double> > &b,vector<vector<double> > &c) {
-	cout << "Init Called" << endl;
-	int i,j;
-	for (i = 0; i < n; i++) {
-		vector<double> temp,temp1,temp2;
-			for (j = 0; j < n; j++) {
-				temp.push_back(fRand());
-				temp1.push_back(fRand());
-				temp2.push_back(0.0);
-			}
-			a.push_back(temp);
-			b.push_back(temp1);
-			c.push_back(temp2);
-		}
-}
-
-void multiplyMatrix(double n,vector<vector<double> > a,vector<vector<double> > b,vector<vector<double> > &c) {
+void initArrays(int n, double*& a, double*& b, double*& c) {
 	int i, j;
+	a = (double*) malloc(n * n * sizeof(double)); //new double[n*n];
+	b = (double*) malloc(n * n * sizeof(double));
+	c = (double*) malloc(n * n * sizeof(double));
 	for (i = 0; i < n; i++) {
 		for (j = 0; j < n; j++) {
-			for (int k = 0; k < n; k++) {
-				c[i][j] = c[i][j] + a[i][k] * b[k][j];
-			}
+			a[n * i + j] = fRand();
+			b[n * i + j] = fRand();
 		}
 	}
 }
+void cleanUp(double*& a, double*& b, double*& c) {
+	free(a);
+	free(b);
+	free(c);
+}
+double multiplyMatrix(int n, double*& a, double*& b, double*& c) {
+	int i, j, k;
+	double timeStart = omp_get_wtime();
+	double temp = 0.0;
+	for (i = 0; i < n; i++) {
+		for (j = 0; j < n; j++) {
+			for (k = 0; k < n; k++) {
+				temp = temp + a[n * i + k] * b[n * k + j];
+			}
+			c[n * i + j] = temp;
+			temp = 0;
+		}
+	}
+	double timeEnd = omp_get_wtime();
+	return timeEnd - timeStart;
+}
 double fRand() {
 	double f = (double) random() / RAND_MAX;
-	return f*11.0;
+	return f * 11.0;
 }
